@@ -1,4 +1,4 @@
-import {Editor, isActive} from "@tiptap/core";
+import { Editor, isActive } from "@tiptap/core";
 import Blockquote from "@tiptap/extension-blockquote";
 import Bold from "@tiptap/extension-bold";
 import BulletList from "@tiptap/extension-bullet-list";
@@ -27,8 +27,8 @@ import Text from "@tiptap/extension-text";
 import TextStyle from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
 import Highlight from "@tiptap/extension-highlight";
-import {BubbleMenu} from "@tiptap/extension-bubble-menu";
-import {FloatingMenu} from "@tiptap/extension-floating-menu";
+import { BubbleMenu } from "@tiptap/extension-bubble-menu";
+import { FloatingMenu } from "@tiptap/extension-floating-menu";
 import {
     CheckedList,
     Lead,
@@ -78,7 +78,7 @@ let coreExtensions = {
     details: [Details, DetailsSummary, DetailsContent],
     grid: [Grid, GridColumn],
     'grid-builder': [GridBuilder, GridBuilderColumn],
-    heading: [Heading.configure({levels: [1, 2, 3, 4, 5, 6]})],
+    heading: [Heading.configure({ levels: [1, 2, 3, 4, 5, 6] })],
     highlight: [Highlight],
     hr: [HorizontalRule],
     hurdle: [Hurdle],
@@ -93,19 +93,19 @@ let coreExtensions = {
             class: null,
         },
     })],
-    media: [CustomImage.configure({inline: true})],
+    media: [CustomImage.configure({ inline: true })],
     oembed: [Youtube, Vimeo, Video],
     'ordered-list': [OrderedList],
     small: [Small],
     strike: [Strike],
     subscript: [Subscript],
     superscript: [Superscript],
-    table: [Table.configure({resizable: true}), TableHeader, TableCell, TableRow],
+    table: [Table.configure({ resizable: true }), TableHeader, TableCell, TableRow],
     underline: [Underline],
 };
 
 let customExtensions = window.TiptapEditorExtensions || {};
-let editorExtensions = {...coreExtensions, ...customExtensions};
+let editorExtensions = { ...coreExtensions, ...customExtensions };
 
 const localeSwitcher = document.getElementById('activeLocale');
 if (localeSwitcher) {
@@ -131,34 +131,34 @@ document.addEventListener("dblclick", function (e) {
 
 Livewire.on('insertFromAction', (event) => {
     setTimeout(() => {
-        const proxyEvent = new CustomEvent('insert-content', { bubble: true, detail: event})
+        const proxyEvent = new CustomEvent('insert-content', { bubble: true, detail: event })
         window.dispatchEvent(proxyEvent);
     }, 100)
 })
 
 Livewire.on('insertBlockFromAction', (event) => {
     setTimeout(() => {
-        const proxyEvent = new CustomEvent('insert-block', { bubble: true, detail: event})
+        const proxyEvent = new CustomEvent('insert-block', { bubble: true, detail: event })
         window.dispatchEvent(proxyEvent);
     }, 100)
 })
 
 Livewire.on('updateBlockFromAction', (event) => {
     setTimeout(() => {
-        const proxyEvent = new CustomEvent('update-block', { bubble: true, detail: event})
+        const proxyEvent = new CustomEvent('update-block', { bubble: true, detail: event })
         window.dispatchEvent(proxyEvent);
     }, 100)
 })
 
 export default function tiptap({
-   state,
-   statePath,
-   tools = [],
-   disabled = false,
-   locale = 'en',
-   floatingMenuTools = [],
-   placeholder = null,
-   mergeTags = [],
+    state,
+    statePath,
+    tools = [],
+    disabled = false,
+    locale = 'en',
+    floatingMenuTools = [],
+    placeholder = null,
+    mergeTags = [],
 }) {
     let editor = null;
 
@@ -202,7 +202,7 @@ export default function tiptap({
             ];
 
             if (placeholder && (!disabled)) {
-                extensions.push(Placeholder.configure({placeholder}));
+                extensions.push(Placeholder.configure({ placeholder }));
             }
 
             if (tools.length) {
@@ -221,7 +221,7 @@ export default function tiptap({
                         appendTo: this.$refs.element,
                         zIndex: 10,
                     },
-                    shouldShow: ({state, from, to}) => {
+                    shouldShow: ({ state, from, to }) => {
                         if (
                             isActive(state, 'link') ||
                             isActive(state, 'table')
@@ -300,7 +300,7 @@ export default function tiptap({
 
             return extensions;
         },
-        init: function() {
+        init: function () {
             this.modalId = this.$el.closest('[x-ref="modalContainer"]')?.getAttribute('wire:key');
 
             let existing = this.$refs.element.querySelector('.tiptap');
@@ -367,7 +367,7 @@ export default function tiptap({
                         });
                     }
                 },
-                onCreate({editor}) {
+                onCreate({ editor }) {
                     if (
                         _this.$store.previous &&
                         editor.commands.getStatePath() === _this.$store.previous.statePath
@@ -380,7 +380,7 @@ export default function tiptap({
                         _this.updatedAt = Date.now();
                     }
                 },
-                onUpdate({editor}) {
+                onUpdate({ editor }) {
                     _this.updatedAt = Date.now();
                     _this.state = editor.isEmpty ? null : editor.getJSON();
                 },
@@ -421,9 +421,9 @@ export default function tiptap({
         },
         updateEditorContent(content) {
             if (editor.isEditable) {
-                const {from, to} = editor.state.selection;
+                const { from, to } = editor.state.selection;
                 editor.commands.setContent(content, true);
-                editor.chain().focus().setTextSelection({from, to}).run();
+                editor.chain().focus().setTextSelection({ from, to }).run();
             }
         },
         refreshEditorContent() {
@@ -490,7 +490,7 @@ export default function tiptap({
                         })
                         .run();
                 } else {
-                    editor.chain().focus().extendMarkRange('link').setLink({href: src}).insertContent(media?.link_text).run();
+                    editor.chain().focus().extendMarkRange('link').setLink({ href: src }).insertContent(media?.link_text).run();
                 }
             }
         },
@@ -620,7 +620,15 @@ export default function tiptap({
             }
         },
         openBlockSettings(event) {
+            console.log('openBlockSettings(event) before state path', event, this.statePath);
+            console.log('State path: ', this.statePath);
+            console.log('Event state path: ', event.detail.statePath);
+
             if (event.detail.statePath !== this.statePath) return
+
+            console.log('openBlockSettings(event) after state path check', event);
+            console.log('State path: ', this.statePath);
+            console.log('Event state path: ', event.detail.statePath);
 
             this.$wire.dispatchFormEvent("tiptap::updateBlock", this.statePath, event.detail);
         },
